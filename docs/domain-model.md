@@ -773,27 +773,31 @@ Do not include yet:
 - Billing plans
 - Enterprise permissions
 
-## Open Product Decisions
+## Resolved MVP Decisions
 
-These should be answered before implementation begins:
+The initial product decisions have been approved and are recorded in [MVP Decisions](mvp-decisions.md).
 
-1. Should the MVP include authentication immediately, or start with a single local demo user?
-2. Should environments be fixed values or configurable per workspace?
-3. Should cost data use only USD in the MVP?
-4. Should security findings be generated only from seeded scenarios at first, or should there be a simple deterministic rule engine?
-5. Should AI insights be generated live through an API, or should the first demo use pre-generated AI-like summaries?
-6. Should the dashboard default to the latest high-impact change or a broader workspace health overview?
-7. What level of historical data should the demo workspace include: 7 days, 30 days, or 90 days?
+Key domain defaults:
+
+- Start with a single local demo user.
+- Use fixed environments: `development`, `staging`, and `production`.
+- Use USD only for MVP cost data.
+- Start with seeded security findings.
+- Start with pre-generated AI-like insights tied to demo data.
+- Default the dashboard to the latest high-impact change.
+- Seed 30 days of demo history by default.
 
 ## Recommended Next Step
 
-Before writing application code, define the MVP user experience around the entities in this document:
+The MVP user experience is documented in [MVP User Experience](mvp-user-experience.md), and the approved defaults are recorded in [MVP Decisions](mvp-decisions.md).
 
-1. Overview dashboard
-2. Change timeline
-3. Impact detail page
-4. Resource inventory
-5. Cost intelligence view
-6. Security findings view
+The implementation plan is documented in [Implementation Map](implementation-map.md). It maps this domain model to:
+
+1. Project structure
+2. Backend modules
+3. Database schema
+4. API boundaries
+5. Demo data seed strategy
+6. Frontend routes and screens
 
 The domain model should remain stable enough that the frontend, backend, database schema, and demo data can all be designed around the same product language.

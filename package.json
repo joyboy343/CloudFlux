@@ -1,0 +1,35 @@
+{
+  "name": "cloudflux",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Observe-only AWS cloud intelligence platform for small startup engineering teams.",
+  "packageManager": "npm@11.16.0",
+  "engines": {
+    "node": ">=22.0.0",
+    "npm": ">=10.0.0"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:web": "npm run build -w @cloudflux/contracts && npm run dev -w @cloudflux/web",
+    "dev:api": "npm run build -w @cloudflux/contracts && npm run dev -w @cloudflux/api",
+    "build": "npm run build -w @cloudflux/contracts && npm run build -w @cloudflux/api && npm run build -w @cloudflux/web",
+    "build:contracts": "npm run build -w @cloudflux/contracts",
+    "build:api": "npm run build -w @cloudflux/contracts && npm run build -w @cloudflux/api",
+    "build:web": "npm run build -w @cloudflux/contracts && npm run build -w @cloudflux/web",
+    "typecheck": "npm run build -w @cloudflux/contracts && npm run typecheck -w @cloudflux/contracts && npm run typecheck -w @cloudflux/api && npm run typecheck -w @cloudflux/web",
+    "lint": "npm run lint -w @cloudflux/contracts && npm run lint -w @cloudflux/api && npm run lint -w @cloudflux/web",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.20.0"
+  }
+}

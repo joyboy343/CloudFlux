@@ -283,13 +283,52 @@ Future integrations may include:
 - Terraform plan ingestion
 - Slack or email alerts
 
+## Local Development
+
+CloudFlux is scaffolded as a TypeScript monorepo.
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the API:
+
+```bash
+npm run dev:api
+```
+
+Run the web app:
+
+```bash
+npm run dev:web
+```
+
+Local URLs:
+
+- Web app: `http://localhost:3000/overview`
+- API health: `http://localhost:3001/api/health`
+- Current workspace API: `http://localhost:3001/api/workspaces/current`
+
+Verification commands:
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+npm audit --audit-level=high
+```
+
 ## Planning Documents
 
 - [Domain Model](docs/domain-model.md)
 - [MVP User Experience](docs/mvp-user-experience.md)
+- [MVP Decisions](docs/mvp-decisions.md)
+- [Implementation Map](docs/implementation-map.md)
 
 ## Current Status
 
-Planning phase.
+Milestone 0 scaffold complete.
 
-The product vision, MVP boundary, architecture direction, domain model, and MVP user experience have been defined. The next step is to resolve open product and UX decisions before writing application code.
+The TypeScript monorepo scaffold is in place with a Next.js web app, NestJS API, shared contracts package, API health endpoint, and demo workspace endpoint. The next step is Milestone 1: PostgreSQL, Prisma schema, and deterministic demo seed data.

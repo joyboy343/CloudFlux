@@ -776,19 +776,21 @@ Recommended UX implementation order later:
 9. Resource and finding detail pages
 10. Insights collection
 
-This order keeps the core product workflow visible from the beginning.
+This order keeps the core product workflow visible from the beginning. The implementation sequence is documented in [Implementation Map](implementation-map.md).
 
-## Open UX Decisions
+## Resolved UX Decisions
 
-These should be resolved before application implementation:
+The initial UX decisions have been approved and are recorded in [MVP Decisions](mvp-decisions.md).
 
-1. Should the app open directly to the dashboard, or show a lightweight demo workspace selector first?
-2. Should the latest impact summary dominate the dashboard, or should workspace health metrics be visually equal?
-3. Should the impact detail page use tabs, sections, or a split layout?
-4. Should resource detail and finding detail be full pages or side drawers?
-5. Should AI insights be pre-generated for demo data first, or generated live through an API?
-6. Should the MVP include a global search box?
-7. Should users be able to acknowledge findings in the MVP, or should that wait until after observe-only browsing is complete?
+Key UX defaults:
+
+- Open directly to the overview dashboard in the demo workspace.
+- Let the latest high-impact change dominate the dashboard.
+- Use a section-based full page for impact detail.
+- Use full pages for resource detail and finding detail.
+- Use pre-generated AI-like insights for the first demo experience.
+- Skip global search for MVP.
+- Skip finding acknowledgement for MVP.
 
 ## Mentoring Recommendation
 
