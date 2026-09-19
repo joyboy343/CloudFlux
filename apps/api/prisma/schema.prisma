@@ -1,0 +1,338 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String                @id
+  email        String                @unique
+  displayName  String                @map("display_name")
+  createdAt    DateTime              @default(now()) @map("created_at")
+  updatedAt    DateTime              @updatedAt @map("updated_at")
+  memberships  WorkspaceMembership[]
+  auditEvents  AuditEvent[]          @relation("AuditActor")
+
+  @@map("users")
+}
+
+model Workspace {
+  id               String                @id
+  name             String
+  slug             String                @unique
+  status           String
+  createdAt        DateTime              @default(now()) @map("created_at")
+  updatedAt        DateTime              @updatedAt @map("updated_at")
+  memberships      WorkspaceMembership[]
+  cloudAccounts    CloudAccount[]
+  environments     Environment[]
+  cloudResources   CloudResource[]
+  resourceSnapshots ResourceSnapshot[]
+  changeEvents     ChangeEvent[]
+  resourceChanges  ResourceChange[]
+  costSnapshots    CostSnapshot[]
+  securityFindings SecurityFinding[]
+  impactSummaries  ImpactSummary[]
+  aiInsights       AIInsight[]
+  auditEvents      AuditEvent[]
+
+  @@map("workspaces")
+}
+
+model WorkspaceMembership {
+  id          String    @id
+  workspaceId String    @map("workspace_id")
+  userId      String    @map("user_id")
+  role        String
+  status      String
+  createdAt   DateTime  @default(now()) @map("created_at")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([workspaceId, userId])
+  @@index([workspaceId])
+  @@index([userId])
+  @@map("workspace_memberships")
+}
+
+model CloudAccount {
+  id                String            @id
+  workspaceId       String            @map("workspace_id")
+  provider          String
+  accountName       String            @map("account_name")
+  externalAccountId String            @map("external_account_id")
+  mode              String
+  connectionStatus  String            @map("connection_status")
+  createdAt         DateTime          @default(now()) @map("created_at")
+  updatedAt         DateTime          @updatedAt @map("updated_at")
+  workspace         Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  resources         CloudResource[]
+  costSnapshots     CostSnapshot[]
+  securityFindings  SecurityFinding[]
+  changeEvents      ChangeEvent[]
+
+  @@index([workspaceId])
+  @@map("cloud_accounts")
+}
+
+model Environment {
+  id              String            @id
+  workspaceId     String            @map("workspace_id")
+  name            String
+  description     String?
+  criticality     String
+  createdAt       DateTime          @default(now()) @map("created_at")
+  workspace       Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  resources       CloudResource[]
+  changeEvents    ChangeEvent[]
+  costSnapshots   CostSnapshot[]
+  securityFindings SecurityFinding[]
+  impactSummaries ImpactSummary[]
+
+  @@unique([workspaceId, name])
+  @@index([workspaceId])
+  @@map("environments")
+}
+
+model CloudResource {
+  id                 String            @id
+  workspaceId        String            @map("workspace_id")
+  cloudAccountId     String            @map("cloud_account_id")
+  environmentId      String            @map("environment_id")
+  externalResourceId String            @map("external_resource_id")
+  arn                String?
+  name               String
+  service            String
+  resourceType       String            @map("resource_type")
+  region             String
+  status             String
+  owner              String?
+  tags               Json
+  firstSeenAt        DateTime          @map("first_seen_at")
+  lastSeenAt         DateTime          @map("last_seen_at")
+  deletedAt          DateTime?         @map("deleted_at")
+  workspace          Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  cloudAccount       CloudAccount      @relation(fields: [cloudAccountId], references: [id], onDelete: Cascade)
+  environment        Environment       @relation(fields: [environmentId], references: [id], onDelete: Restrict)
+  snapshots          ResourceSnapshot[]
+  resourceChanges    ResourceChange[]
+  costSnapshots      CostSnapshot[]
+  securityFindings   SecurityFinding[]
+
+  @@unique([cloudAccountId, externalResourceId])
+  @@index([workspaceId])
+  @@index([cloudAccountId])
+  @@index([environmentId])
+  @@index([service])
+  @@index([resourceType])
+  @@index([status])
+  @@map("cloud_resources")
+}
+
+model ResourceSnapshot {
+  id              String          @id
+  workspaceId     String          @map("workspace_id")
+  cloudResourceId String          @map("cloud_resource_id")
+  capturedAt      DateTime        @map("captured_at")
+  configuration   Json
+  normalizedStatus String         @map("normalized_status")
+  tags            Json
+  source          String
+  sourceEventId   String?         @map("source_event_id")
+  createdAt       DateTime        @default(now()) @map("created_at")
+  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  cloudResource   CloudResource   @relation(fields: [cloudResourceId], references: [id], onDelete: Cascade)
+  beforeChanges   ResourceChange[] @relation("BeforeSnapshot")
+  afterChanges    ResourceChange[] @relation("AfterSnapshot")
+
+  @@index([workspaceId])
+  @@index([cloudResourceId])
+  @@index([capturedAt])
+  @@map("resource_snapshots")
+}
+
+model ChangeEvent {
+  id                 String            @id
+  workspaceId        String            @map("workspace_id")
+  cloudAccountId     String            @map("cloud_account_id")
+  environmentId      String?           @map("environment_id")
+  source             String
+  eventType          String            @map("event_type")
+  title              String
+  description        String?
+  actorName          String            @map("actor_name")
+  actorType          String            @map("actor_type")
+  happenedAt         DateTime          @map("happened_at")
+  externalReference  String?           @map("external_reference")
+  riskLevel          String            @map("risk_level")
+  metadata           Json
+  createdAt          DateTime          @default(now()) @map("created_at")
+  workspace          Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  cloudAccount       CloudAccount      @relation(fields: [cloudAccountId], references: [id], onDelete: Cascade)
+  environment        Environment?      @relation(fields: [environmentId], references: [id], onDelete: SetNull)
+  resourceChanges    ResourceChange[]
+  impactSummary      ImpactSummary?
+  introducedFindings SecurityFinding[] @relation("IntroducedByChange")
+  resolvedFindings   SecurityFinding[] @relation("ResolvedByChange")
+  aiInsights         AIInsight[]
+
+  @@index([workspaceId])
+  @@index([environmentId])
+  @@index([happenedAt])
+  @@index([eventType])
+  @@index([source])
+  @@map("change_events")
+}
+
+model ResourceChange {
+  id               String            @id
+  workspaceId      String            @map("workspace_id")
+  changeEventId    String            @map("change_event_id")
+  cloudResourceId  String            @map("cloud_resource_id")
+  action           String
+  beforeSnapshotId String?           @map("before_snapshot_id")
+  afterSnapshotId  String?           @map("after_snapshot_id")
+  summary          String
+  createdAt        DateTime          @default(now()) @map("created_at")
+  workspace        Workspace         @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  changeEvent      ChangeEvent       @relation(fields: [changeEventId], references: [id], onDelete: Cascade)
+  cloudResource    CloudResource     @relation(fields: [cloudResourceId], references: [id], onDelete: Cascade)
+  beforeSnapshot   ResourceSnapshot? @relation("BeforeSnapshot", fields: [beforeSnapshotId], references: [id], onDelete: SetNull)
+  afterSnapshot    ResourceSnapshot? @relation("AfterSnapshot", fields: [afterSnapshotId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([changeEventId])
+  @@index([cloudResourceId])
+  @@map("resource_changes")
+}
+
+model CostSnapshot {
+  id              String         @id
+  workspaceId     String         @map("workspace_id")
+  cloudAccountId  String         @map("cloud_account_id")
+  environmentId   String?        @map("environment_id")
+  cloudResourceId String?        @map("cloud_resource_id")
+  service         String
+  periodStart     DateTime       @map("period_start")
+  periodEnd       DateTime       @map("period_end")
+  granularity     String
+  amount          Decimal        @db.Decimal(12, 2)
+  currency        String
+  costType        String         @map("cost_type")
+  source          String
+  createdAt       DateTime       @default(now()) @map("created_at")
+  workspace       Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  cloudAccount    CloudAccount   @relation(fields: [cloudAccountId], references: [id], onDelete: Cascade)
+  environment     Environment?   @relation(fields: [environmentId], references: [id], onDelete: SetNull)
+  cloudResource   CloudResource? @relation(fields: [cloudResourceId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([periodStart])
+  @@index([service])
+  @@map("cost_snapshots")
+}
+
+model SecurityFinding {
+  id                         String         @id
+  workspaceId                String         @map("workspace_id")
+  cloudAccountId             String         @map("cloud_account_id")
+  environmentId              String?        @map("environment_id")
+  cloudResourceId            String?        @map("cloud_resource_id")
+  title                      String
+  description                String
+  severity                   String
+  category                   String
+  status                     String
+  detectedAt                 DateTime       @map("detected_at")
+  resolvedAt                 DateTime?      @map("resolved_at")
+  introducedByChangeEventId  String?        @map("introduced_by_change_event_id")
+  resolvedByChangeEventId    String?        @map("resolved_by_change_event_id")
+  evidence                   Json
+  remediation                String
+  createdAt                  DateTime       @default(now()) @map("created_at")
+  updatedAt                  DateTime       @updatedAt @map("updated_at")
+  workspace                  Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  cloudAccount               CloudAccount   @relation(fields: [cloudAccountId], references: [id], onDelete: Cascade)
+  environment                Environment?   @relation(fields: [environmentId], references: [id], onDelete: SetNull)
+  cloudResource              CloudResource? @relation(fields: [cloudResourceId], references: [id], onDelete: SetNull)
+  introducedByChangeEvent    ChangeEvent?   @relation("IntroducedByChange", fields: [introducedByChangeEventId], references: [id], onDelete: SetNull)
+  resolvedByChangeEvent      ChangeEvent?   @relation("ResolvedByChange", fields: [resolvedByChangeEventId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@index([severity])
+  @@index([status])
+  @@index([cloudResourceId])
+  @@map("security_findings")
+}
+
+model ImpactSummary {
+  id                            String       @id
+  workspaceId                   String       @map("workspace_id")
+  changeEventId                 String       @unique @map("change_event_id")
+  summaryTitle                  String       @map("summary_title")
+  summaryText                   String       @map("summary_text")
+  environmentId                 String?      @map("environment_id")
+  resourceCreatedCount          Int          @map("resource_created_count")
+  resourceUpdatedCount          Int          @map("resource_updated_count")
+  resourceDeletedCount          Int          @map("resource_deleted_count")
+  costDeltaDaily                Decimal      @map("cost_delta_daily") @db.Decimal(12, 2)
+  costDeltaMonthlyProjected     Decimal      @map("cost_delta_monthly_projected") @db.Decimal(12, 2)
+  currency                      String
+  newSecurityFindingsCount      Int          @map("new_security_findings_count")
+  resolvedSecurityFindingsCount Int          @map("resolved_security_findings_count")
+  highestSeverity               String?      @map("highest_severity")
+  overallImpactLevel            String       @map("overall_impact_level")
+  generatedAt                   DateTime     @map("generated_at")
+  createdAt                     DateTime     @default(now()) @map("created_at")
+  workspace                     Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  changeEvent                   ChangeEvent  @relation(fields: [changeEventId], references: [id], onDelete: Cascade)
+  environment                   Environment? @relation(fields: [environmentId], references: [id], onDelete: SetNull)
+  aiInsights                    AIInsight[]
+
+  @@index([workspaceId])
+  @@index([overallImpactLevel])
+  @@map("impact_summaries")
+}
+
+model AIInsight {
+  id               String         @id
+  workspaceId      String         @map("workspace_id")
+  changeEventId    String?        @map("change_event_id")
+  impactSummaryId  String?        @map("impact_summary_id")
+  subjectType      String         @map("subject_type")
+  subjectId        String         @map("subject_id")
+  insightType      String         @map("insight_type")
+  title            String
+  content          String
+  modelName        String?        @map("model_name")
+  inputFingerprint String?        @map("input_fingerprint")
+  generatedAt      DateTime       @map("generated_at")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  workspace        Workspace      @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  changeEvent      ChangeEvent?   @relation(fields: [changeEventId], references: [id], onDelete: Cascade)
+  impactSummary    ImpactSummary? @relation(fields: [impactSummaryId], references: [id], onDelete: Cascade)
+
+  @@index([workspaceId])
+  @@index([subjectType, subjectId])
+  @@map("ai_insights")
+}
+
+model AuditEvent {
+  id          String    @id
+  workspaceId String    @map("workspace_id")
+  actorUserId String?   @map("actor_user_id")
+  actorType   String    @map("actor_type")
+  action      String
+  targetType  String    @map("target_type")
+  targetId    String    @map("target_id")
+  happenedAt  DateTime  @map("happened_at")
+  metadata    Json
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  actorUser   User?     @relation("AuditActor", fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([workspaceId])
+  @@map("audit_events")
+}

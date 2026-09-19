@@ -22,7 +22,11 @@
     "typecheck": "npm run build -w @cloudflux/contracts && npm run typecheck -w @cloudflux/contracts && npm run typecheck -w @cloudflux/api && npm run typecheck -w @cloudflux/web",
     "lint": "npm run lint -w @cloudflux/contracts && npm run lint -w @cloudflux/api && npm run lint -w @cloudflux/web",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:up": "docker compose up -d postgres",
+    "db:push": "npm run db:push -w @cloudflux/api",
+    "db:seed": "npm run db:seed -w @cloudflux/api",
+    "prisma:generate": "npm run prisma:generate -w @cloudflux/api"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",
