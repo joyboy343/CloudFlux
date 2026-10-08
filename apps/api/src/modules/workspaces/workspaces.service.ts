@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import type {
   CloudProvider,
   EnvironmentCriticality,
@@ -11,7 +11,7 @@ import { PrismaService } from "../../common/prisma/prisma.service";
 
 @Injectable()
 export class WorkspacesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(@Inject(PrismaService) private readonly prisma: PrismaService) {}
 
   async getCurrentWorkspace(): Promise<WorkspaceContextResponse> {
     const workspace = await this.prisma.workspace.findUnique({

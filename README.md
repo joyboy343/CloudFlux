@@ -293,6 +293,18 @@ Install dependencies:
 npm install
 ```
 
+Set up the local database:
+
+```bash
+copy .env.example apps\api\.env
+npm run prisma:generate
+npm run db:up
+npm run db:push
+npm run db:seed
+```
+
+The API workspace reads its Prisma connection settings from `apps/api/.env`.
+
 Run the API:
 
 ```bash
@@ -329,6 +341,6 @@ npm audit --audit-level=high
 
 ## Current Status
 
-Milestone 0 scaffold complete.
+Milestone 1 complete.
 
-The TypeScript monorepo scaffold is in place with a Next.js web app, NestJS API, shared contracts package, API health endpoint, and demo workspace endpoint. The next step is Milestone 1: PostgreSQL, Prisma schema, and deterministic demo seed data.
+The TypeScript monorepo, Prisma schema, local PostgreSQL setup, deterministic demo seed data, API health endpoint, and database-backed demo workspace endpoint are working. The next step is Milestone 2: the overview vertical slice backed by seeded data.

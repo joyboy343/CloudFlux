@@ -877,29 +877,28 @@ Mitigation:
 
 ## Current Implementation Status
 
-Milestone 0 is complete.
+Milestone 1 is complete.
 
-Implemented scaffold:
+Implemented foundation:
 
 - Root npm workspace
 - `apps/web` Next.js application
 - `apps/api` NestJS API application
 - `packages/contracts` shared TypeScript package
+- PostgreSQL Docker Compose setup
+- Prisma schema and generated client
+- Deterministic demo seed data
 - API health endpoint
-- Current demo workspace endpoint
+- Database-backed current workspace endpoint
 - Overview dashboard placeholder route
-- Typecheck, lint, build, and audit verification
+- Typecheck, lint, and build verification
 
 Next target:
 
-- Milestone 1: PostgreSQL, Prisma schema, and deterministic demo seed data
+- Milestone 2: overview vertical slice backed by seeded data
 
-## First Code Session Goal
+## Next Code Session Goal
 
-The first code session completed Milestone 0. The next code session should target Milestone 1.
+Build the first real product slice from database to API to UI:
 
-Recommended first coding goal:
-
-> Add PostgreSQL, Prisma schema, deterministic demo seed data, and the first database-backed workspace endpoint.
-
-After that, move to the overview vertical slice backed by seeded data.
+> Add the overview read model, app shell navigation, demo workspace header, global filters, and latest high-impact summary panel.
