@@ -1,3 +1,4 @@
+import type { CloudAccountSummary, WorkspaceSummary } from "@cloudflux/contracts";
 import Link from "next/link";
 
 const navItems = [
@@ -9,7 +10,23 @@ const navItems = [
   { href: "/insights", label: "Insights" },
 ];
 
-export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) {
+interface AppShellProps {
+  children: React.ReactNode;
+  workspace?: WorkspaceSummary;
+  cloudAccount?: CloudAccountSummary;
+  selectedEnvironment?: string;
+  rangeDays?: number;
+}
+
+export function AppShell({
+  children,
+  workspace,
+  cloudAccount,
+  selectedEnvironment = "all",
+  rangeDays = 30,
+}: Readonly<AppShellProps>) {
+  const environmentLabel = selectedEnvironment === "all" ? "All environments" : selectedEnvironment;
+
   return (
     <div className="min-h-screen bg-surface text-ink">
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-line bg-white px-5 py-6 lg:block">
@@ -35,12 +52,16 @@ export function AppShell({ children }: Readonly<{ children: React.ReactNode }>) 
         <header className="sticky top-0 z-10 border-b border-line bg-white/95 px-4 py-3 backdrop-blur lg:px-8">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <div className="text-sm font-semibold text-slate-900">Acme Cloud Demo</div>
-              <div className="text-xs text-muted">Demo workspace · No infrastructure changes enabled</div>
+              <div className="text-sm font-semibold text-slate-900">
+                {workspace?.name ?? "Cloud workspace"}
+              </div>
+              <div className="mt-1 text-xs text-muted">
+                {cloudAccount?.name ?? "Loading account"} · No infrastructure changes enabled
+              </div>
             </div>
             <div className="flex flex-wrap gap-2 text-xs font-medium text-slate-700">
-              <span className="rounded-md border border-line bg-white px-2.5 py-1">All environments</span>
-              <span className="rounded-md border border-line bg-white px-2.5 py-1">30 days</span>
+              <span className="rounded-md border border-line bg-white px-2.5 py-1">{environmentLabel}</span>
+              <span className="rounded-md border border-line bg-white px-2.5 py-1">{rangeDays} days</span>
               <span className="rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-emerald-800">
                 Observe-only
               </span>
