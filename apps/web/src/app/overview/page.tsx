@@ -3,6 +3,7 @@ import type {
   OverviewRangeDays,
   OverviewResponse,
 } from "@cloudflux/contracts";
+import Link from "next/link";
 
 import { AppShell } from "../../components/app-shell/app-shell";
 import { formatSignedUsd, formatUsd } from "../../lib/formatting/currency";
@@ -150,7 +151,9 @@ function LatestImpactCard({ overview }: { overview: OverviewResponse }) {
             </span>
           </div>
           <h2 className="mt-3 text-xl font-semibold tracking-normal text-slate-950">
-            {impact.title}
+            <Link href={`/changes/${impact.id}`} className="hover:text-accent">
+              {impact.title}
+            </Link>
           </h2>
           <p className="mt-2 max-w-4xl text-sm leading-6 text-slate-600">{impact.description}</p>
           <div className="mt-4 rounded-md border border-orange-200 bg-orange-50 p-3 text-sm text-orange-950">
@@ -288,7 +291,11 @@ function RecentChangesCard({ overview }: { overview: OverviewResponse }) {
         {overview.recentChanges.map((change) => (
           <div key={change.id} className="flex items-start justify-between gap-4 py-4 first:pt-0 last:pb-0">
             <div className="min-w-0">
-              <div className="font-medium text-slate-900">{change.title}</div>
+              <div className="font-medium text-slate-900">
+                <Link href={`/changes/${change.id}`} className="hover:text-accent">
+                  {change.title}
+                </Link>
+              </div>
               <div className="mt-1 text-sm text-muted">
                 {formatLabel(change.environment)} · {formatLabel(change.source)} · {formatDate(change.happenedAt)}
               </div>

@@ -320,8 +320,21 @@ npm run dev:web
 Local URLs:
 
 - Web app: `http://localhost:3000/overview`
+- Change timeline: `http://localhost:3000/timeline`
+- Impact detail: `http://localhost:3000/changes/change_checkout_deploy_cost_spike`
+- Resource inventory: `http://localhost:3000/resources`
+- Resource detail: `http://localhost:3000/resources/resource_checkout_sg_prod`
+- Security findings: `http://localhost:3000/security`
+- Finding detail: `http://localhost:3000/security/finding_checkout_sg_public_postgres`
 - API health: `http://localhost:3001/api/health`
 - Current workspace API: `http://localhost:3001/api/workspaces/current`
+- Overview API: `http://localhost:3001/api/overview?environment=all&rangeDays=30`
+- Timeline API: `http://localhost:3001/api/timeline?environment=all&rangeDays=30`
+- Impact detail API: `http://localhost:3001/api/changes/change_checkout_deploy_cost_spike`
+- Resource inventory API: `http://localhost:3001/api/resources?environment=all`
+- Resource detail API: `http://localhost:3001/api/resources/resource_checkout_sg_prod`
+- Security findings API: `http://localhost:3001/api/security/findings?environment=all`
+- Finding detail API: `http://localhost:3001/api/security/findings/finding_checkout_sg_public_postgres`
 
 Verification commands:
 
@@ -341,6 +354,10 @@ npm audit --audit-level=high
 
 ## Current Status
 
-Milestone 1 complete.
+Milestone 4 complete.
 
-The TypeScript monorepo, Prisma schema, local PostgreSQL setup, deterministic demo seed data, API health endpoint, and database-backed demo workspace endpoint are working. The next step is Milestone 2: the overview vertical slice backed by seeded data.
+CloudFlux now has a database-backed overview dashboard, filterable change timeline, full impact-detail investigation page, resource inventory/detail views, and security finding list/detail views. Users can follow a seeded change from overview to timeline to affected resources and findings, then back to the related change context. The next step is Milestone 5: cost intelligence.
+
+The current investigation flow is:
+
+`Overview → Timeline → Impact detail → Resources and findings → Related changes`

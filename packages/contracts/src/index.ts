@@ -182,3 +182,262 @@ export interface OverviewResponse {
   };
   primaryInsight: OverviewPrimaryInsight | null;
 }
+
+export interface TimelineFilters {
+  environment: EnvironmentFilter;
+  rangeDays: OverviewRangeDays;
+  eventType: string | "all";
+  source: string | "all";
+  impactLevel: string | "all";
+  hasSecurityFindings: boolean | null;
+  hasCostImpact: boolean | null;
+  manualOnly: boolean;
+}
+
+export interface TimelineEvent {
+  id: string;
+  title: string;
+  description: string | null;
+  eventType: string;
+  source: string;
+  environment: string | null;
+  actorName: string;
+  actorType: string;
+  happenedAt: string;
+  impactLevel: string;
+  summary: string | null;
+  costDeltaMonthlyProjected: number;
+  resourceDelta: OverviewResourceDelta;
+  securityDelta: OverviewSecurityDelta;
+}
+
+export interface TimelineResponse {
+  workspace: WorkspaceSummary;
+  cloudAccount: CloudAccountSummary;
+  environments: EnvironmentSummary[];
+  filters: TimelineFilters;
+  filterOptions: {
+    eventTypes: string[];
+    sources: string[];
+    impactLevels: string[];
+  };
+  events: TimelineEvent[];
+  total: number;
+  generatedAt: string;
+}
+
+export interface ImpactDetailSnapshot {
+  id: string;
+  capturedAt: string;
+  configuration: unknown;
+  normalizedStatus: string;
+  tags: unknown;
+}
+
+export interface ImpactDetailResourceChange {
+  id: string;
+  action: string;
+  summary: string;
+  resource: {
+    id: string;
+    name: string;
+    service: string;
+    resourceType: string;
+    region: string;
+    status: string;
+    owner: string | null;
+    environment: string;
+  };
+  beforeSnapshot: ImpactDetailSnapshot | null;
+  afterSnapshot: ImpactDetailSnapshot | null;
+}
+
+export interface ImpactDetailFinding {
+  id: string;
+  title: string;
+  description: string;
+  severity: string;
+  category: string;
+  status: string;
+  detectedAt: string;
+  resolvedAt: string | null;
+  resourceName: string | null;
+  remediation: string;
+  evidence: unknown;
+}
+
+export interface ImpactDetailResponse {
+  workspace: WorkspaceSummary;
+  cloudAccount: CloudAccountSummary;
+  event: {
+    id: string;
+    title: string;
+    description: string | null;
+    eventType: string;
+    source: string;
+    environment: string | null;
+    actorName: string;
+    actorType: string;
+    happenedAt: string;
+    externalReference: string | null;
+    riskLevel: string;
+  };
+  impact: {
+    summaryTitle: string;
+    summaryText: string;
+    overallImpactLevel: string;
+    costDeltaDaily: number;
+    costDeltaMonthlyProjected: number;
+    currency: "USD";
+    resourceDelta: OverviewResourceDelta;
+    securityDelta: OverviewSecurityDelta;
+    generatedAt: string;
+  };
+  aiInsight: OverviewPrimaryInsight | null;
+  resourceChanges: ImpactDetailResourceChange[];
+  costImpact: {
+    dailyDelta: number;
+    monthlyProjectedDelta: number;
+    currency: "USD";
+    source: string;
+    affectedServices: string[];
+  };
+  securityImpact: {
+    introduced: ImpactDetailFinding[];
+    resolved: ImpactDetailFinding[];
+  };
+  reviewActions: Array<{
+    priority: "high" | "medium" | "low";
+    title: string;
+    description: string;
+  }>;
+  relatedEvents: TimelineEvent[];
+  technicalDetails: {
+    externalReference: string | null;
+    metadata: unknown;
+    source: string;
+    snapshotIds: string[];
+  };
+}
+
+export interface ResourceSummary {
+  id: string;
+  name: string;
+  externalResourceId: string;
+  arn: string | null;
+  service: string;
+  resourceType: string;
+  region: string;
+  status: string;
+  owner: string | null;
+  tags: unknown;
+  environment: string;
+  estimatedMonthlyCost: number;
+  openFindingsCount: number;
+  changedRecently: boolean;
+  lastChangedAt: string | null;
+  lastSeenAt: string;
+}
+
+export interface ResourceFilters {
+  environment: EnvironmentFilter;
+  service: string | "all";
+  resourceType: string | "all";
+  region: string | "all";
+  status: string | "all";
+  owner: string | "all";
+  hasFindings: boolean | null;
+  changedRecently: boolean | null;
+  minMonthlyCost: number | null;
+}
+
+export interface ResourceInventoryResponse {
+  workspace: WorkspaceSummary;
+  cloudAccount: CloudAccountSummary;
+  environments: EnvironmentSummary[];
+  filters: ResourceFilters;
+  filterOptions: {
+    services: string[];
+    resourceTypes: string[];
+    regions: string[];
+    statuses: string[];
+    owners: string[];
+  };
+  resources: ResourceSummary[];
+  total: number;
+  generatedAt: string;
+}
+
+export interface ResourceSnapshotSummary {
+  id: string;
+  capturedAt: string;
+  normalizedStatus: string;
+  configuration: unknown;
+  tags: unknown;
+}
+
+export interface ResourceCostPoint {
+  date: string;
+  amount: number;
+}
+
+export interface ResourceDetailResponse {
+  workspace: WorkspaceSummary;
+  cloudAccount: CloudAccountSummary;
+  resource: ResourceSummary;
+  snapshots: ResourceSnapshotSummary[];
+  costTrend: ResourceCostPoint[];
+  findings: FindingSummary[];
+  relatedChanges: TimelineEvent[];
+}
+
+export interface FindingSummary {
+  id: string;
+  title: string;
+  description: string;
+  severity: string;
+  category: string;
+  status: string;
+  detectedAt: string;
+  resolvedAt: string | null;
+  resourceId: string | null;
+  resourceName: string | null;
+  environment: string | null;
+  remediation: string;
+  introducedByChangeEventId: string | null;
+  resolvedByChangeEventId: string | null;
+}
+
+export interface SecurityFilters {
+  environment: EnvironmentFilter;
+  severity: string | "all";
+  status: string | "all";
+  category: string | "all";
+  resourceId: string | "all";
+}
+
+export interface SecurityFindingsResponse {
+  workspace: WorkspaceSummary;
+  cloudAccount: CloudAccountSummary;
+  environments: EnvironmentSummary[];
+  filters: SecurityFilters;
+  filterOptions: {
+    severities: string[];
+    statuses: string[];
+    categories: string[];
+  };
+  findings: FindingSummary[];
+  total: number;
+  generatedAt: string;
+}
+
+export interface SecurityFindingDetailResponse {
+  workspace: WorkspaceSummary;
+  cloudAccount: CloudAccountSummary;
+  finding: FindingSummary & {
+    evidence: unknown;
+  };
+  introducedByChange: TimelineEvent | null;
+  resolvedByChange: TimelineEvent | null;
+  relatedFindings: FindingSummary[];
+}

@@ -877,28 +877,32 @@ Mitigation:
 
 ## Current Implementation Status
 
-Milestone 1 is complete.
+Milestone 4 is complete.
 
-Implemented foundation:
+Implemented product slices:
 
 - Root npm workspace
 - `apps/web` Next.js application
 - `apps/api` NestJS API application
 - `packages/contracts` shared TypeScript package
 - PostgreSQL Docker Compose setup
-- Prisma schema and generated client
-- Deterministic demo seed data
-- API health endpoint
-- Database-backed current workspace endpoint
-- Overview dashboard placeholder route
-- Typecheck, lint, and build verification
+- Prisma schema and deterministic demo seed data
+- Database-backed workspace context and overview read model
+- Overview dashboard with global environment and range filters
+- Timeline API and filterable timeline page
+- Impact detail API and full investigation page
+- Cross-links from overview and timeline to impact detail
+- Resource inventory and resource detail APIs/pages
+- Security findings and finding detail APIs/pages
+- Cross-links between changes, resources, and findings
+- Typecheck, lint, production build, and end-to-end route verification
 
 Next target:
 
-- Milestone 2: overview vertical slice backed by seeded data
+- Milestone 5: cost intelligence view
 
 ## Next Code Session Goal
 
-Build the first real product slice from database to API to UI:
+Build the cost investigation surface:
 
-> Add the overview read model, app shell navigation, demo workspace header, global filters, and latest high-impact summary panel.
+> Add cost summary APIs/pages, service and environment breakdowns, cost trend markers, and links from cost movement back to change events.
