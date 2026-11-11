@@ -441,3 +441,45 @@ export interface SecurityFindingDetailResponse {
   resolvedByChange: TimelineEvent | null;
   relatedFindings: FindingSummary[];
 }
+
+export interface CostFilters {
+  environment: EnvironmentFilter;
+  rangeDays: OverviewRangeDays;
+}
+
+export interface CostTrendPoint {
+  date: string;
+  amount: number;
+  isAnomaly: boolean;
+  relatedChangeIds: string[];
+}
+
+export interface CostBreakdownRow {
+  label: string;
+  currentPeriodCost: number;
+  previousPeriodCost: number;
+  delta: number;
+  deltaPercent: number | null;
+  relatedChangeIds: string[];
+}
+
+export interface CostResponse {
+  workspace: WorkspaceSummary;
+  cloudAccount: CloudAccountSummary;
+  environments: EnvironmentSummary[];
+  filters: CostFilters;
+  metrics: {
+    currentPeriodCost: number;
+    projectedMonthlyCost: number;
+    costDeltaOverRange: number;
+    costDeltaPercent: number | null;
+    largestServiceCostDriver: string | null;
+    largestRecentIncrease: number;
+  };
+  trend: CostTrendPoint[];
+  serviceBreakdown: CostBreakdownRow[];
+  environmentBreakdown: CostBreakdownRow[];
+  relatedChanges: TimelineEvent[];
+  source: "seeded-demo";
+  generatedAt: string;
+}

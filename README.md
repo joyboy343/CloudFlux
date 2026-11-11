@@ -324,6 +324,7 @@ Local URLs:
 - Impact detail: `http://localhost:3000/changes/change_checkout_deploy_cost_spike`
 - Resource inventory: `http://localhost:3000/resources`
 - Resource detail: `http://localhost:3000/resources/resource_checkout_sg_prod`
+- Cost intelligence: `http://localhost:3000/costs`
 - Security findings: `http://localhost:3000/security`
 - Finding detail: `http://localhost:3000/security/finding_checkout_sg_public_postgres`
 - API health: `http://localhost:3001/api/health`
@@ -333,6 +334,7 @@ Local URLs:
 - Impact detail API: `http://localhost:3001/api/changes/change_checkout_deploy_cost_spike`
 - Resource inventory API: `http://localhost:3001/api/resources?environment=all`
 - Resource detail API: `http://localhost:3001/api/resources/resource_checkout_sg_prod`
+- Cost summary API: `http://localhost:3001/api/costs/summary?environment=all&rangeDays=30`
 - Security findings API: `http://localhost:3001/api/security/findings?environment=all`
 - Finding detail API: `http://localhost:3001/api/security/findings/finding_checkout_sg_public_postgres`
 
@@ -354,10 +356,10 @@ npm audit --audit-level=high
 
 ## Current Status
 
-Milestone 4 complete.
+Milestone 5 complete.
 
-CloudFlux now has a database-backed overview dashboard, filterable change timeline, full impact-detail investigation page, resource inventory/detail views, and security finding list/detail views. Users can follow a seeded change from overview to timeline to affected resources and findings, then back to the related change context. The next step is Milestone 5: cost intelligence.
+CloudFlux now has a database-backed overview dashboard, filterable change timeline, full impact-detail investigation page, resource inventory/detail views, security finding list/detail views, and a cost intelligence view with service/environment breakdowns and change-linked spend movement. Users can follow a seeded change from overview to timeline to affected resources, findings, and cost context. The next step is Milestone 6: insights and polish.
 
 The current investigation flow is:
 
-`Overview → Timeline → Impact detail → Resources and findings → Related changes`
+`Overview → Timeline → Impact detail → Resources and findings → Cost intelligence → Related changes`

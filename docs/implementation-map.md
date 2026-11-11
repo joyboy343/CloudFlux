@@ -877,7 +877,7 @@ Mitigation:
 
 ## Current Implementation Status
 
-Milestone 4 is complete.
+Milestone 5 is complete.
 
 Implemented product slices:
 
@@ -895,14 +895,18 @@ Implemented product slices:
 - Resource inventory and resource detail APIs/pages
 - Security findings and finding detail APIs/pages
 - Cross-links between changes, resources, and findings
+- Cost summary API and cost intelligence page
+- Service and environment spend breakdowns
+- Daily cost trend with anomaly and change markers
+- Links from cost movement back to related change events
 - Typecheck, lint, production build, and end-to-end route verification
 
 Next target:
 
-- Milestone 5: cost intelligence view
+- Milestone 6: insights and polish
 
 ## Next Code Session Goal
 
-Build the cost investigation surface:
+Build the insights and polish surface:
 
-> Add cost summary APIs/pages, service and environment breakdowns, cost trend markers, and links from cost movement back to change events.
+> Add insights APIs/pages, then complete responsive, accessibility, and empty/loading/error-state polish.
